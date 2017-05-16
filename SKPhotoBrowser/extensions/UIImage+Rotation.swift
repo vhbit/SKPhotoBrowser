@@ -24,15 +24,15 @@ extension UIImage {
             space: self.cgImage!.colorSpace!,
             bitmapInfo: self.cgImage!.bitmapInfo.rawValue)
         ctx!.concatenate(transform)
-        
+
         switch self.imageOrientation {
         case .left, .leftMirrored, .right, .rightMirrored:
             ctx!.draw(self.cgImage!, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
-            
+
         default:
             ctx!.draw(self.cgImage!, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         }
-        
+
         // And now we just create a new UIImage from the drawing context
         if let cgImage = ctx!.makeImage() {
             return UIImage(cgImage: cgImage)
@@ -49,15 +49,15 @@ extension UIImage {
         switch self.imageOrientation {
         case .down, .downMirrored:
             transform = transform.translatedBy(x: self.size.width, y: self.size.height)
-            transform = transform.rotated(by: CGFloat(M_PI))
+            transform = transform.rotated(by: CGFloat.pi)
 
         case .left, .leftMirrored:
             transform = transform.translatedBy(x: self.size.width, y: 0)
-            transform = transform.rotated(by: CGFloat(M_PI_2))
+            transform = transform.rotated(by: CGFloat.pi)
 
         case .right, .rightMirrored:
             transform = transform.translatedBy(x: 0, y: self.size.height)
-            transform = transform.rotated(by: CGFloat(-M_PI_2))
+            transform = transform.rotated(by: -CGFloat.pi/2.0)
 
         default:
             break
@@ -79,4 +79,3 @@ extension UIImage {
         return transform
     }
 }
-

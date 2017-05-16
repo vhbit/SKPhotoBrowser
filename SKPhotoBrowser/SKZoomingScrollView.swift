@@ -21,32 +21,32 @@ open class SKZoomingScrollView: UIScrollView {
             }
         }
     }
-    
+
     fileprivate(set) var photoImageView: SKDetectingImageView!
     fileprivate weak var photoBrowser: SKPhotoBrowser?
     fileprivate var tapView: SKDetectingView!
     fileprivate var indicatorView: SKIndicatorView!
-    
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
+
     convenience init(frame: CGRect, browser: SKPhotoBrowser) {
         self.init(frame: frame)
         photoBrowser = browser
         setup()
     }
-    
+
     deinit {
         photoBrowser = nil
     }
-    
+
     func setup() {
         // tap
         tapView = SKDetectingView(frame: bounds)
@@ -54,38 +54,39 @@ open class SKZoomingScrollView: UIScrollView {
         tapView.backgroundColor = .clear
         tapView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         addSubview(tapView)
-        
+
         // image
         photoImageView = SKDetectingImageView(frame: frame)
         photoImageView.delegate = self
         photoImageView.contentMode = .bottom
         photoImageView.backgroundColor = .clear
         addSubview(photoImageView)
-        
+
         // indicator
         indicatorView = SKIndicatorView(frame: frame)
         addSubview(indicatorView)
-        
+
         // self
         backgroundColor = .clear
         delegate = self
         showsHorizontalScrollIndicator = SKPhotoBrowserOptions.displayHorizontalScrollIndicator
         showsVerticalScrollIndicator = SKPhotoBrowserOptions.displayVerticalScrollIndicator
         decelerationRate = UIScrollViewDecelerationRateFast
-        autoresizingMask = [.flexibleWidth, .flexibleTopMargin, .flexibleBottomMargin, .flexibleRightMargin, .flexibleLeftMargin]
+        autoresizingMask = [.flexibleWidth, .flexibleTopMargin, .flexibleBottomMargin,
+                            .flexibleRightMargin, .flexibleLeftMargin]
     }
-    
+
     // MARK: - override
-    
+
     open override func layoutSubviews() {
         tapView.frame = bounds
         indicatorView.frame = bounds
-        
+
         super.layoutSubviews()
-        
+
         let boundsSize = bounds.size
         var frameToCenter = photoImageView.frame
-        
+
         // horizon
         if frameToCenter.size.width < boundsSize.width {
             frameToCenter.origin.x = floor((boundsSize.width - frameToCenter.size.width) / 2)
@@ -98,36 +99,41 @@ open class SKZoomingScrollView: UIScrollView {
         } else {
             frameToCenter.origin.y = 0
         }
-        
+
         // Center
         if !photoImageView.frame.equalTo(frameToCenter) {
             photoImageView.frame = frameToCenter
         }
     }
-    
+
     open func setMaxMinZoomScalesForCurrentBounds() {
         maximumZoomScale = 1
         minimumZoomScale = 1
         zoomScale = 1
-        
+
         guard let photoImageView = photoImageView else {
             return
         }
-        
+
         let boundsSize = bounds.size
         let imageSize = photoImageView.frame.size
-        
+
         let xScale = boundsSize.width / imageSize.width
         let yScale = boundsSize.height / imageSize.height
         let minScale: CGFloat = min(xScale, yScale)
         var maxScale: CGFloat = 1.0
-        
+
         let scale = max(UIScreen.main.scale, 2.0)
-        let deviceScreenWidth = UIScreen.main.bounds.width * scale // width in pixels. scale needs to remove if to use the old algorithm
-        let deviceScreenHeight = UIScreen.main.bounds.height * scale // height in pixels. scale needs to remove if to use the old algorithm
-        
+
+        // width in pixels. scale needs to remove if to use the old algorithm
+        let deviceScreenWidth = UIScreen.main.bounds.width * scale
+
+        // height in pixels. scale needs to remove if to use the old algorithm
+        let deviceScreenHeight = UIScreen.main.bounds.height * scale
+
         if photoImageView.frame.width < deviceScreenWidth {
-            // I think that we should to get coefficient between device screen width and image width and assign it to maxScale. I made two mode that we will get the same result for different device orientations.
+            // I think that we should to get coefficient between device screen width and image width and assign it
+            // to maxScale. I made two mode that we will get the same result for different device orientations.
             if UIApplication.shared.statusBarOrientation.isPortrait {
                 maxScale = deviceScreenHeight / photoImageView.frame.width
             } else {
@@ -139,11 +145,11 @@ open class SKZoomingScrollView: UIScrollView {
             // here if photoImageView.frame.width == deviceScreenWidth
             maxScale = 2.5
         }
-    
+
         maximumZoomScale = maxScale
         minimumZoomScale = minScale
         zoomScale = minScale
-        
+
         // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
         // maximum zoom scale to 0.5
         // After changing this value, we still never use more
@@ -153,20 +159,22 @@ open class SKZoomingScrollView: UIScrollView {
             maxScale = minScale * 2
         }
         */
-        
+
         // reset position
-        photoImageView.frame = CGRect(x: 0, y: 0, width: photoImageView.frame.size.width, height: photoImageView.frame.size.height)
+        photoImageView.frame = CGRect(x: 0, y: 0,
+                                      width: photoImageView.frame.size.width,
+                                      height: photoImageView.frame.size.height)
         setNeedsLayout()
     }
-    
+
     open func prepareForReuse() {
         photo = nil
         if captionView != nil {
             captionView.removeFromSuperview()
-            captionView = nil 
+            captionView = nil
         }
     }
-    
+
     // MARK: - image
     open func displayImage(complete flag: Bool) {
         // reset scale
@@ -174,7 +182,7 @@ open class SKZoomingScrollView: UIScrollView {
         minimumZoomScale = 1
         zoomScale = 1
         contentSize = CGSize.zero
-        
+
         if !flag {
             if photo.underlyingImage == nil {
                 indicatorView.startAnimating()
@@ -183,36 +191,36 @@ open class SKZoomingScrollView: UIScrollView {
         } else {
             indicatorView.stopAnimating()
         }
-        
+
         if let image = photo.underlyingImage {
             // image
             photoImageView.image = image
             photoImageView.contentMode = photo.contentMode
             photoImageView.backgroundColor = SKPhotoBrowserOptions.backgroundColor
-            
+
             var photoImageViewFrame = CGRect.zero
             photoImageViewFrame.origin = CGPoint.zero
             photoImageViewFrame.size = image.size
-            
+
             photoImageView.frame = photoImageViewFrame
-            
+
             contentSize = photoImageViewFrame.size
-            
+
             setMaxMinZoomScalesForCurrentBounds()
         }
         setNeedsLayout()
     }
-    
+
     open func displayImageFailure() {
         indicatorView.stopAnimating()
     }
-    
+
     // MARK: - handle tap
     open func handleDoubleTap(_ touchPoint: CGPoint) {
         if let photoBrowser = photoBrowser {
             NSObject.cancelPreviousPerformRequests(withTarget: photoBrowser)
         }
-        
+
         if zoomScale > minimumZoomScale {
             // zoom out
             setZoomScale(minimumZoomScale, animated: true)
@@ -227,7 +235,7 @@ open class SKZoomingScrollView: UIScrollView {
             let zoomRect = zoomRectForScrollViewWith(maximumZoomScale, touchPoint: touchPoint)
             zoom(to: zoomRect, animated: true)
         }
-        
+
         // delay control
         photoBrowser?.hideControlsAfterDelay()
     }
@@ -239,11 +247,11 @@ extension SKZoomingScrollView: UIScrollViewDelegate {
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return photoImageView
     }
-    
+
     public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         photoBrowser?.cancelControlHiding()
     }
-    
+
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setNeedsLayout()
         layoutIfNeeded()
@@ -260,14 +268,14 @@ extension SKZoomingScrollView: SKDetectingViewDelegate {
         guard SKPhotoBrowserOptions.enableZoomBlackArea == true else {
             return
         }
-        
+
         if browser.areControlsHidden() == false && SKPhotoBrowserOptions.enableSingleTapDismiss == true {
             browser.determineAndClose()
         } else {
             browser.toggleControls()
         }
     }
-    
+
     func handleDoubleTap(_ view: UIView, touch: UITouch) {
         if SKPhotoBrowserOptions.enableZoomBlackArea == true {
             let needPoint = getViewFramePercent(view, touch: touch)
@@ -275,7 +283,6 @@ extension SKZoomingScrollView: SKDetectingViewDelegate {
         }
     }
 }
-
 
 // MARK: - SKDetectingImageViewDelegate
 
@@ -290,7 +297,7 @@ extension SKZoomingScrollView: SKDetectingImageViewDelegate {
             browser.toggleControls()
         }
     }
-    
+
     func handleImageViewDoubleTap(_ touchPoint: CGPoint) {
         handleDoubleTap(touchPoint)
     }
@@ -302,13 +309,13 @@ private extension SKZoomingScrollView {
         let viewTouchPoint = touch.location(in: view)
         let viewWidthTouch = viewTouchPoint.x
         let viewPercentTouch = viewWidthTouch / oneWidthViewPercent
-        
+
         let photoWidth = photoImageView.bounds.width
         let onePhotoPercent = photoWidth / 100
         let needPoint = viewPercentTouch * onePhotoPercent
-        
+
         var Y: CGFloat!
-        
+
         if viewTouchPoint.y < view.bounds.height / 2 {
             Y = 0
         } else {
@@ -317,13 +324,13 @@ private extension SKZoomingScrollView {
         let allPoint = CGPoint(x: needPoint, y: Y)
         return allPoint
     }
-    
+
     func zoomRectForScrollViewWith(_ scale: CGFloat, touchPoint: CGPoint) -> CGRect {
         let w = frame.size.width / scale
         let h = frame.size.height / scale
         let x = touchPoint.x - (h / max(UIScreen.main.scale, 2.0))
         let y = touchPoint.y - (w / max(UIScreen.main.scale, 2.0))
-        
+
         return CGRect(x: x, y: y, width: w, height: h)
     }
 }

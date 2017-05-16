@@ -20,7 +20,7 @@ open class SKCache {
         guard let cache = imageCache as? SKImageCacheable else {
             return nil
         }
-        
+
         return cache.imageForKey(key)
     }
 
@@ -28,7 +28,7 @@ open class SKCache {
         guard let cache = imageCache as? SKImageCacheable else {
             return
         }
-        
+
         cache.setImage(image, forKey: key)
     }
 
@@ -36,7 +36,7 @@ open class SKCache {
         guard let cache = imageCache as? SKImageCacheable else {
             return
         }
-        
+
         cache.removeImageForKey(key)
     }
 
@@ -44,7 +44,7 @@ open class SKCache {
         guard let cache = imageCache as? SKRequestResponseCacheable else {
             return nil
         }
-        
+
         if let response = cache.cachedResponseForRequest(request) {
             return UIImage(data: response.data)
         }
