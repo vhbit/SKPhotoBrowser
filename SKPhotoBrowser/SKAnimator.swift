@@ -53,7 +53,12 @@ class SKAnimator: NSObject, SKPhotoBrowserAnimatorDelegate {
 
         let photo = browser.photoAtIndex(browser.currentPageIndex)
         let imageFromView = (senderOriginImage ?? browser.getImageFromView(sender)).rotateImageByOrientation()
-        let imageRatio = imageFromView.size.width / imageFromView.size.height
+        let imageSize = imageFromView.size
+        // the trick here is that if the image has zero height it'll crash
+        // instead let's use imageRatio = 1.0. While it'll be not true, at
+        // least there will be no crash
+        let imageRatio = (imageSize.height != 0) ? imageFromView.size.width / imageFromView.size.height
+                                                 : 1.0
 
         senderViewOriginalFrame = calcOriginFrame(sender)
         finalImageViewFrame = calcFinalFrame(imageRatio)
