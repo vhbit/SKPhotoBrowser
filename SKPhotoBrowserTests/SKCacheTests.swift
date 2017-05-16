@@ -26,7 +26,7 @@ class SKCacheTests: XCTestCase {
 
         super.tearDown()
     }
-    
+
     func testInit() {
         XCTAssertNotNil(self.cache.imageCache)
         XCTAssert(self.cache.imageCache is SKDefaultImageCache, "Default image cache should be loaded on init")

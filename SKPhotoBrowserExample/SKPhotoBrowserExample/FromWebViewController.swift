@@ -13,10 +13,10 @@ import SDWebImage
 class FromWebViewController: UIViewController, SKPhotoBrowserDelegate {
     @IBOutlet weak var imageView: UIImageView!
     var images = [SKPhotoProtocol]()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         SKCache.sharedCache.imageCache = CustomImageCache()
         let url = URL(string: "https://placehold.jp/1500x1500.png")
         let complated: SDWebImageCompletionBlock = { (image, error, cacheType, imageURL) -> Void in
@@ -25,12 +25,12 @@ class FromWebViewController: UIViewController, SKPhotoBrowserDelegate {
         }
         imageView.sd_setImage(with: url, completed: complated)
     }
-    
+
     @IBAction func pushButton(_ sender: AnyObject) {
         let browser = SKPhotoBrowser(photos: createWebPhotos())
         browser.initializePageIndex(0)
         browser.delegate = self
-        
+
         present(browser, animated: true, completion: nil)
     }
 }
@@ -40,10 +40,10 @@ class FromWebViewController: UIViewController, SKPhotoBrowserDelegate {
 extension FromWebViewController {
     func didDismissAtPageIndex(_ index: Int) {
     }
-    
+
     func didDismissActionSheetWithButtonIndex(_ buttonIndex: Int, photoIndex: Int) {
     }
-    
+
     func removePhoto(index: Int, reload: (() -> Void)) {
         SKCache.sharedCache.removeImageForKey("somekey")
         reload()
@@ -54,9 +54,8 @@ extension FromWebViewController {
 
 private extension FromWebViewController {
     func createWebPhotos() -> [SKPhotoProtocol] {
-        return (0..<10).map { (i: Int) -> SKPhotoProtocol in
-//            let photo = SKPhoto.photoWithImageURL("https://placehold.jp/150\(i)x150\(i).png", holder: UIImage(named: "image0.jpg")!)
-            let photo = SKPhoto.photoWithImageURL("https://placehold.jp/156\(i)x150\(i).png")
+        return (0..<10).map { idx in
+            let photo = SKPhoto.photoWithImageURL("https://placehold.jp/156\(idx)x150\(idx).png")
             photo.caption = caption[i%10]
             photo.shouldCachePhotoURLImage = true
             return photo
@@ -66,7 +65,7 @@ private extension FromWebViewController {
 
 class CustomImageCache: SKImageCacheable {
     var cache: SDImageCache
-    
+
     init() {
         let cache = SDImageCache(namespace: "com.suzuki.custom.cache")
         self.cache = cache!
@@ -74,7 +73,7 @@ class CustomImageCache: SKImageCacheable {
 
     func imageForKey(_ key: String) -> UIImage? {
         guard let image = cache.imageFromDiskCache(forKey: key) else { return nil }
-        
+
         return image
     }
 

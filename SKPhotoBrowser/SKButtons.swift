@@ -23,50 +23,47 @@ class SKButton: UIButton {
     }
     var size: CGSize = CGSize(width: 44, height: 44)
     var margin: CGFloat = SKPhotoBrowserOptions.closeAndDeleteButtonPadding
-    
-    var buttonTopOffset: CGFloat {
-        return 30
-    }
-    
+    var buttonTopOffset: CGFloat { return 30 }
+
     func setup(_ imageName: String) {
         backgroundColor = .clear
         imageEdgeInsets = insets
         translatesAutoresizingMaskIntoConstraints = true
         autoresizingMask = [.flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin]
-        
+
         let image = UIImage(named: "SKPhotoBrowser.bundle/images/\(imageName)",
                             in: bundle, compatibleWith: nil) ?? UIImage()
         setImage(image, for: UIControlState())
     }
-  
+
     func setFrameSize(_ size: CGSize) {
         let newRect = CGRect(x: margin, y: buttonTopOffset, width: size.width, height: size.height)
         frame = newRect
         showFrame = newRect
         hideFrame = CGRect(x: margin, y: -20, width: size.width, height: size.height)
     }
-    
+
     func updateFrame(_ frameSize: CGSize) { }
 }
 
 class SKImageButton: SKButton {
-    
+
     fileprivate var leftSidePositionMargin: CGFloat {
         return super.margin
     }
-    
+
     fileprivate var rightSidePositionMargin: CGFloat {
         return SKMesurement.screenWidth - super.margin - self.size.width
     }
-    
+
     fileprivate var imageName: String {
         return ""
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup(imageName)
@@ -77,7 +74,7 @@ class SKImageButton: SKButton {
 
 class SKCloseButton: SKImageButton {
     override var imageName: String { return "btn_common_close_wh" }
-    
+
     override var margin: CGFloat {
         get {
             return SKPhotoBrowserOptions.swapCloseAndDeleteButtons
@@ -88,11 +85,33 @@ class SKCloseButton: SKImageButton {
             super.margin = newValue
         }
     }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup(imageName)
+        showFrame = CGRect(x: SKMesurement.screenWidth - size.width, y: buttonTopOffset,
+                           width: size.width,
+                           height: size.height)
+        hideFrame = CGRect(x: SKMesurement.screenWidth - size.width, y: -20, width: size.width, height: size.height)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func setFrameSize(_ size: CGSize) {
+        let newRect = CGRect(x: SKMesurement.screenWidth - size.width, y: buttonTopOffset,
+                             width: size.width,
+                             height: size.height)
+        self.frame = newRect
+        showFrame = newRect
+        hideFrame = CGRect(x: SKMesurement.screenWidth - size.width, y: -20, width: size.width, height: size.height)
+    }
 }
 
 class SKDeleteButton: SKImageButton {
     override var imageName: String { return "btn_common_delete_wh" }
-    
+
     override var margin: CGFloat {
         get { return SKPhotoBrowserOptions.swapCloseAndDeleteButtons
             ? leftSidePositionMargin
@@ -100,9 +119,15 @@ class SKDeleteButton: SKImageButton {
         }
         set { super.margin = newValue }
     }
-    
+
     override func updateFrame(_ newScreenSize: CGSize) {
-        showFrame = CGRect(x: newScreenSize.width - size.width, y: buttonTopOffset, width: size.width, height: size.height)
-        hideFrame = CGRect(x: newScreenSize.width - size.width, y: -20, width: size.width, height: size.height)
+        showFrame = CGRect(x: newScreenSize.width - size.width,
+                           y: buttonTopOffset,
+                           width: size.width,
+                           height: size.height)
+        hideFrame = CGRect(x: newScreenSize.width - size.width,
+                           y: -20,
+                           width: size.width,
+                           height: size.height)
     }
 }

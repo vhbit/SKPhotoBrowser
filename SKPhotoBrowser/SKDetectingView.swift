@@ -15,13 +15,13 @@ import UIKit
 
 class SKDetectingView: UIView {
     weak var delegate: SKDetectingViewDelegate?
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         defer {
             _ = next
         }
-        
+
         guard let touch = touches.first else {
             return
         }
@@ -31,11 +31,11 @@ class SKDetectingView: UIView {
         default: break
         }
     }
-    
+
     func handleSingleTap(_ touch: UITouch) {
         delegate?.handleSingleTap(self, touch: touch)
     }
-    
+
     func handleDoubleTap(_ touch: UITouch) {
         delegate?.handleDoubleTap(self, touch: touch)
     }

@@ -19,7 +19,7 @@ import UIKit
 
 // MARK: - SKPhoto
 open class SKPhoto: NSObject, SKPhotoProtocol {
-    
+
     open var underlyingImage: UIImage!
     open var photoURL: String!
     open var contentMode: UIViewContentMode = .scaleAspectFill
@@ -30,23 +30,23 @@ open class SKPhoto: NSObject, SKPhotoProtocol {
     override init() {
         super.init()
     }
-    
+
     convenience init(image: UIImage) {
         self.init()
         underlyingImage = image
     }
-    
+
     convenience init(url: String) {
         self.init()
         photoURL = url
     }
-    
+
     convenience init(url: String, holder: UIImage?) {
         self.init()
         photoURL = url
         underlyingImage = holder
     }
-    
+
     open func checkCache() {
         guard let photoURL = photoURL else {
             return
@@ -54,7 +54,7 @@ open class SKPhoto: NSObject, SKPhotoProtocol {
         guard shouldCachePhotoURLImage else {
             return
         }
-        
+
         if SKCache.sharedCache.imageCache is SKRequestResponseCacheable {
             let request = URLRequest(url: URL(string: photoURL)!)
             if let img = SKCache.sharedCache.imageForRequest(request) {
@@ -66,16 +66,16 @@ open class SKPhoto: NSObject, SKPhotoProtocol {
             }
         }
     }
-    
+
     open func loadUnderlyingImageAndNotify() {
         guard photoURL != nil, let URL = URL(string: photoURL) else { return }
-        
+
         // Fetch Image
         let session = URLSession(configuration: URLSessionConfiguration.default)
             var task: URLSessionTask?
             task = session.dataTask(with: URL, completionHandler: { [weak self] (data, response, error) in
                 guard let `self` = self else { return }
-                
+
                 defer { session.finishTasksAndInvalidate() }
 
                 guard error == nil else {
@@ -98,15 +98,15 @@ open class SKPhoto: NSObject, SKPhotoProtocol {
                         self.loadUnderlyingImageComplete()
                     }
                 }
-                
+
             })
             task?.resume()
     }
 
     open func loadUnderlyingImageComplete() {
-        NotificationCenter.default.post(name: Notification.Name(rawValue: SKPHOTO_LOADING_DID_END_NOTIFICATION), object: self)
+        NotificationCenter.default.post(name: .SKPhotoLoadingDidEnd, object: self)
     }
-    
+
 }
 
 // MARK: - Static Function
@@ -115,11 +115,11 @@ extension SKPhoto {
     public static func photoWithImage(_ image: UIImage) -> SKPhoto {
         return SKPhoto(image: image)
     }
-    
+
     public static func photoWithImageURL(_ url: String) -> SKPhoto {
         return SKPhoto(url: url)
     }
-    
+
     public static func photoWithImageURL(_ url: String, holder: UIImage?) -> SKPhoto {
         return SKPhoto(url: url, holder: holder)
     }
