@@ -28,7 +28,7 @@ class SKPhotoBrowserTests: XCTestCase {
 
     func testSKPhotoArray() {
         var images = [SKPhoto]()
-        let photo = SKPhoto.photoWithImage(UIImage())// add some UIImage
+        let photo = SKPhoto(image: UIImage())// add some UIImage
         images.append(photo)
         _ = FakeSKPhotoBrowser(photos: images)
     }

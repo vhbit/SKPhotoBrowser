@@ -103,7 +103,7 @@ class FromCameraRollViewController: UIViewController, SKPhotoBrowserDelegate, UI
 
         func open(_ images: [UIImage]) {
 
-            let photoImages: [SKPhotoProtocol] = images.map({ return SKPhoto.photoWithImage($0) })
+            let photoImages: [SKPhotoProtocol] = images.map({ return SKPhoto(image: $0) })
             let browser = SKPhotoBrowser(originImage: cell.exampleImageView.image!, photos: photoImages,
                                          animatedFromView: cell)
 

@@ -31,17 +31,17 @@ open class SKPhoto: NSObject, SKPhotoProtocol {
         super.init()
     }
 
-    convenience init(image: UIImage) {
+    public convenience init(image: UIImage) {
         self.init()
         underlyingImage = image
     }
 
-    convenience init(url: String) {
+    public convenience init(url: String) {
         self.init()
         photoURL = url
     }
 
-    convenience init(url: String, holder: UIImage?) {
+    public convenience init(url: String, holder: UIImage?) {
         self.init()
         photoURL = url
         underlyingImage = holder
@@ -107,20 +107,4 @@ open class SKPhoto: NSObject, SKPhotoProtocol {
         NotificationCenter.default.post(name: .SKPhotoLoadingDidEnd, object: self)
     }
 
-}
-
-// MARK: - Static Function
-
-extension SKPhoto {
-    public static func photoWithImage(_ image: UIImage) -> SKPhoto {
-        return SKPhoto(image: image)
-    }
-
-    public static func photoWithImageURL(_ url: String) -> SKPhoto {
-        return SKPhoto(url: url)
-    }
-
-    public static func photoWithImageURL(_ url: String, holder: UIImage?) -> SKPhoto {
-        return SKPhoto(url: url, holder: holder)
-    }
 }
