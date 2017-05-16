@@ -137,7 +137,7 @@ private extension FromLocalViewController {
 
     func createLocalPhotos() -> [SKPhotoProtocol] {
         return (0..<10).map { idx in
-            let photo = SKPhoto.photoWithImage(UIImage(named: "image\(idx % 10).jpg")!)
+            let photo = SKPhoto(image: UIImage(named: "image\(idx % 10).jpg")!)
             photo.caption = caption[i%10]
 //            photo.contentMode = .ScaleAspectFill
             return photo
