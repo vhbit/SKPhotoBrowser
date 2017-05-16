@@ -11,6 +11,10 @@ import UIKit
 public struct SKPhotoBrowserOptions {
     public static var displayStatusbar: Bool = false
 
+    /// Displays buttons immediately after animation was completed
+    /// If it is set to false, buttons are displayed only after
+    /// tap (i.e. user intention)
+    public static var displayButtonsAfterAnimation: Bool = true
     public static var displayAction: Bool = true
     public static var shareExtraCaption: String?
     public static var actionButtonTitles: [String]?
