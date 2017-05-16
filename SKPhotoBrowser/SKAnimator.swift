@@ -153,7 +153,11 @@ private extension SKAnimator {
             initialSpringVelocity:0,
             options:UIViewAnimationOptions(),
             animations: {
-                browser.showButtons()
+                if SKPhotoBrowserOptions.displayButtonsAfterAnimation {
+                    browser.showButtons()
+                } else {
+                    browser.hideControls(animated: false)
+                }
                 browser.backgroundView.alpha = 1.0
 
                 self.resizableImageView?.frame = self.finalImageViewFrame

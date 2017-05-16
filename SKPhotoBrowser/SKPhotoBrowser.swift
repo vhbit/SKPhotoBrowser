@@ -342,8 +342,8 @@ public extension SKPhotoBrowser {
                                                       userInfo: nil, repeats: false)
     }
 
-    func hideControls() {
-        setControlsHidden(true, animated: true, permanent: false)
+    func hideControls(animated: Bool = true) {
+        setControlsHidden(true, animated: animated, permanent: false)
     }
 
     @objc func hideControls(_ timer: Timer) {
