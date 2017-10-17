@@ -1,7 +1,7 @@
 SKPhotoBrowser
 ========================
 
-![Swift](http://img.shields.io/badge/swift-3.0-brightgreen.svg)
+![Swift](http://img.shields.io/badge/swift-4.0-brightgreen.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Cocoapods Compatible](https://img.shields.io/cocoapods/v/SKPhotoBrowser.svg?style=flat)](http://cocoadocs.org/docsets/SKPhotoBrowser)
 
@@ -29,7 +29,8 @@ Below is a table that shows which version of SKPhotoBrowser you should use for y
 
 | Swift version | SKPhotoBrowser version    |
 | ------------- | --------------- |
-| 3.X           | >= 4.0.0 |
+| 4.X           | >= 5.0.0 |
+| 3.2           | >= 4.0.0 |
 | 2.3           | 2.0.4 - 3.1.4  |
 | 2.2           | <= 2.0.3        |
 
@@ -115,20 +116,18 @@ SKPhotoBrowserOptions.displayToolbar = false                              // all
 SKPhotoBrowserOptions.displayCounterLabel = false                         // counter label will be hidden
 SKPhotoBrowserOptions.displayBackAndForwardButton = false                 // back / forward button will be hidden
 SKPhotoBrowserOptions.displayAction = false                               // action button will be hidden
-SKPhotoBrowserOptions.displayDeleteButton = true                          // delete button will be shown
 SKPhotoBrowserOptions.displayHorizontalScrollIndicator = false            // horizontal scroll bar will be hidden
 SKPhotoBrowserOptions.displayVerticalScrollIndicator = false              // vertical scroll bar will be hidden
 let browser = SKPhotoBrowser(originImage: originImage, photos: images, animatedFromView: cell)
 ```
 
 #### Colors
-You can customize text, icon and background colors via SKPhotoBrowserOptions
+You can customize text, icon and background colors via SKPhotoBrowserOptions or SKToolbarOptions
 ```swift
 SKPhotoBrowserOptions.backgroundColor = UIColor.whiteColor()               // browser view will be white
 SKPhotoBrowserOptions.textAndIconColor = UIColor.blackColor()              // text and icons will be black
-SKPhotoBrowserOptions.toolbarTextShadowColor = UIColor.clearColor()        // shadow of toolbar text will be removed
-SKPhotoBrowserOptions.toolbarFont = UIFont(name: "Futura", size: 16.0)     // font of toolbar will be 'Futura'
-SKPhotoBrowserOptions.captionFont = UIFont(name: "Helvetica", size: 18.0)  // font of toolbar will be 'Helvetica'
+SKToolbarOptions.textShadowColor = UIColor.clearColor()                    // shadow of toolbar text will be removed
+SKToolbarOptions.font = UIFont(name: "Futura", size: 16.0)                 // font of toolbar will be 'Futura'
 ```
 
 #### Images
@@ -142,6 +141,14 @@ SKPhotoBrowserOptions.imagePaddingY = 50                                   // im
 You can customize the visibility of the Statusbar in browser view via SKPhotoBrowserOptions
 ```swift
 SKPhotoBrowserOptions.displayStatusbar = false                             // status bar will be hidden
+```
+
+#### Close And Delete Buttons
+That how you can customize close and delete buttons
+```
+SKPhotoBrowserOptions.displayDeleteButton = true                           // delete button will be shown
+SKPhotoBrowserOptions.swapCloseAndDeleteButtons = true                     // now close button located on right side of screen and delete button is on left side
+SKPhotoBrowserOptions.closeAndDeleteButtonPadding = 20                     // set offset from top and from nearest screen edge of close button and delete button
 ```
 
 #### Custom Cache From Web URL

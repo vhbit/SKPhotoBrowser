@@ -154,7 +154,7 @@ open class SKZoomingScrollView: UIScrollView {
         // maximum zoom scale to 0.5
         // After changing this value, we still never use more
         /*
-        maxScale = maxScale / scale 
+        maxScale = maxScale / scale
         if maxScale < minScale {
             maxScale = minScale * 2
         }
@@ -192,7 +192,7 @@ open class SKZoomingScrollView: UIScrollView {
             indicatorView.stopAnimating()
         }
 
-        if let image = photo.underlyingImage {
+        if let image = photo.underlyingImage, photo != nil {
             // image
             photoImageView.image = image
             photoImageView.contentMode = photo.contentMode
